@@ -5,14 +5,6 @@ pipeline {
         stage('Install') {
             steps {
                 sh '''
-                    python3 --version || true
-                    python --version || true
-
-                    if ! command -v python3 >/dev/null 2>&1; then
-                      apt-get update
-                      apt-get install -y python3 python3-pip python3-venv
-                    fi
-
                     python3 -m pip install --upgrade pip
                     python3 -m pip install -r requirements.txt
                 '''
