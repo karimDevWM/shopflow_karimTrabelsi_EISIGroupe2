@@ -5,8 +5,10 @@ pipeline {
         stage('Install') {
             steps {
                 sh '''
-                    python3 -m pip install --upgrade pip
-                    python3 -m pip install -r requirements.txt
+                    python3 -m venv .venv
+                    . .venv/bin/activate
+                    python -m pip install --upgrade pip
+                    python -m pip install -r requirements.txt
                 '''
             }
         }
@@ -14,6 +16,7 @@ pipeline {
         stage('Lint') {
             steps {
                 sh '''
+                    . .venv/bin/activate
                     python3 -m flake8 app tests --max-line-length=100 --exclude=__init__.py
                     python3 -m pylint app > pylint-report.txt || true
                 '''
@@ -23,7 +26,8 @@ pipeline {
         stage('Unit Tests') {
             steps {
                 sh '''
-                    python3 -m pytest tests/unit -v --junitxml=junit-unit.xml --no-cov
+                    . .venv/bin/activate
+                    python -m pytest tests/unit -v --junitxml=junit-unit.xml --no-cov
                 '''
             }
             post {
@@ -36,7 +40,8 @@ pipeline {
         stage('Integration Tests') {
             steps {
                 sh '''
-                    python3 -m pytest tests/integration -v --junitxml=junit-integration.xml --no-cov
+                    . .venv/bin/activate
+                    python -m pytest tests/integration -v --junitxml=junit-integration.xml --no-cov
                 '''
             }
             post {
@@ -49,7 +54,8 @@ pipeline {
         stage('Coverage') {
             steps {
                 sh '''
-                    python3 -m pytest tests --cov=app --cov-report=term-missing --cov-report=xml:coverage.xml --junitxml=junit-report.xml
+                    . .venv/bin/activate
+                    python -m pytest tests --cov=app --cov-report=term-missing --cov-report=xml:coverage.xml --junitxml=junit-report.xml
                 '''
             }
             post {
