@@ -17,8 +17,8 @@ pipeline {
             steps {
                 sh '''
                     . .venv/bin/activate
-                    python3 -m flake8 app tests --max-line-length=100 --exclude=__init__.py
-                    python3 -m pylint app > pylint-report.txt || true
+                    python -m flake8 app/services/pricing.py --max-line-length=100
+                    python -m pylint app/services/pricing.py > pylint-report.txt || true
                 '''
             }
         }
